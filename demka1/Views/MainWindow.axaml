@@ -1,0 +1,46 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:demka1.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="demka1.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="demka1">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+ 
+   
+   <!--<Grid RowDefinitions="50, *, 50" ColumnDefinitions="200, *" > 
+       <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Background="Aqua"></TextBlock>
+       <TextBlock Grid.Row="1" Grid.Column="1"  Background="Yellow"></TextBlock>
+       <TextBlock Grid.Column="0" Grid.Row="2"  Grid.ColumnSpan="2" Background="Tan"></TextBlock>
+       <TextBlock Grid.Row="0" Grid.Column="0"  Grid.RowSpan="3"  Background="Green"></TextBlock>
+       
+      
+   </Grid> -->
+   
+ <Grid RowDefinitions="50, *">
+     <Border Background="Aqua">
+         <TextBlock Grid.Row="0" Text="Чудо-обувь" FontSize="40" HorizontalAlignment="Center"></TextBlock>
+     </Border>
+     <Grid ColumnDefinitions="160, *" Grid.Row="1">
+         <Border Grid.Column="0" Background="CadetBlue">
+             <StackPanel>
+                 <Button Margin="10" Content="Главная страница" Command="{Binding Loading}" Background="DeepSkyBlue" HorizontalAlignment="Center"></Button>
+                 <Button Margin="10" Content="Заказы" Command="{Binding GetOrder}" Background="DeepSkyBlue" HorizontalAlignment="Center" ></Button>
+             </StackPanel>
+         </Border>
+        <UserControl Grid.Column="1" Content="{Binding Page}" Background="LightBlue"></UserControl> 
+        
+     </Grid>
+ </Grid>
+ 
+
+</Window>
