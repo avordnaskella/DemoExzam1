@@ -5,11 +5,11 @@ namespace demka1.Models;
 
 public partial class User
 {
-    public string LoginId { get; set; } = null!;
-
     public string Name { get; set; } = null!;
 
-    public string Surname { get; set; } = null!;
+    public string Login { get; set; } = null!;
+
+    public string Lastname { get; set; } = null!;
 
     public string? Patronymic { get; set; }
 

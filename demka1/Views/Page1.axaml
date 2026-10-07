@@ -11,5 +11,5 @@
 
              x:Class="demka1.Page1">
 
-  <TextBlock Text="Страница 1"></TextBlock>
+  <TextBlock Text="{Binding User.Name}"></TextBlock>
 </UserControl>

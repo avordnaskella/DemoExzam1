@@ -5,13 +5,11 @@ namespace demka1.Models;
 
 public partial class Order
 {
-    public int OrderId { get; set; }
+    public int IdOrder { get; set; }
 
-    public DateOnly DateOrder { get; set; }
+    public DateOnly Date { get; set; }
 
-    public string LoginId { get; set; } = null!;
+    public string IdUser { get; set; } = null!;
 
-    public virtual User Login { get; set; } = null!;
-
-    public virtual ICollection<ProductOrder> ProductOrders { get; set; } = new List<ProductOrder>();
+    public virtual User IdUserNavigation { get; set; } = null!;
 }

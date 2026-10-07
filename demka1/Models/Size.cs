@@ -5,11 +5,9 @@ namespace demka1.Models;
 
 public partial class Size
 {
-    public int SizeId { get; set; }
+    public int IdSize { get; set; }
 
-    public double Name { get; set; }
-
-    public virtual ICollection<ProductOrder> ProductOrders { get; set; } = new List<ProductOrder>();
+    public float Size1 { get; set; }
 
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
 }
