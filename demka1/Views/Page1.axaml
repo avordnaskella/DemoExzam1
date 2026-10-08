@@ -11,5 +11,72 @@
 
              x:Class="demka1.Page1">
 
-  <TextBlock Text="{Binding User.Name}"></TextBlock>
+  <ScrollViewer
+       VerticalScrollBarVisibility="Visible"
+        HorizontalScrollBarVisibility="Disabled">
+
+ 
+  <ItemsControl ItemsSource="{Binding Products}">
+      <ItemsControl.ItemTemplate>
+          <DataTemplate>
+           
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="10" Padding="10"
+                             Background="{Binding CardBackground}">
+                        <Grid ColumnDefinitions="150, *, Auto">
+
+                            
+                            <Image Grid.Column="0"
+                                   Source="{Binding ProductImage}"
+                                   Width="120" Height="80"
+                                   Stretch="Uniform"
+                                   Margin="0,0,10,0"/>
+
+                            <!-- 2. Текстовая информация -->
+                            <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                <TextBlock FontSize="16" FontWeight="Bold" HorizontalAlignment="Center">
+                                    <Run Text="{Binding IdManufactureNavigation.Title}"/>
+                                    <Run Text=" | "/>
+                                    <Run Text="{Binding Title}"/>
+                                </TextBlock>
+
+                                <TextBlock>
+                                    <Run Text="Категория: "/>
+                                    <Run Text="{Binding IdCategoryNavigation.Title}"/>
+                                </TextBlock>
+
+                                <TextBlock>
+                                    <Run Text="Количество: "/>
+                                    <Run Text="{Binding CountString}"/>
+                                </TextBlock>
+
+                                <TextBlock>
+                                    <Run Text="Состав: "/>
+                                    <Run Text="{Binding Structure}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- 3. Цена -->
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" MinWidth="100">
+                                <StackPanel IsVisible="{Binding HasDiscount}">
+                                    <TextBlock Text="{Binding FinalPrice, StringFormat='{}{0} руб.'}"
+                                               FontSize="20" Foreground="Red" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
+                                               FontSize="14" TextDecorations="Strikethrough"
+                                               Foreground="Gray" HorizontalAlignment="Right"/>
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
+                                           FontSize="20"
+                                           IsVisible="{Binding !HasDiscount}"
+                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+          </DataTemplate>
+      </ItemsControl.ItemTemplate>
+ </ItemsControl>
+  
+  </ScrollViewer> 
+
 </UserControl>

@@ -6,8 +6,8 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="demka1.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="demka1">
+        Icon="/Assets/Чудо Обувь.ico"
+        Title="Чудо-обувь">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,

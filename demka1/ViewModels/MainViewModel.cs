@@ -3,6 +3,7 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using demka1.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace demka1.ViewModels;
@@ -23,11 +24,10 @@ public partial class MainViewModel : ViewModelBase
         Page = new Page2();
     }
 
-
-    //[ObservableProperty] User user = db.User;
-    
-
-    [ObservableProperty] User user = db.Users.First();
-
-    //public string Greeting => user.Name;
+    [ObservableProperty] 
+    List<Product> products = db.Products
+        .Include(x => x.IdCategoryNavigation)
+        .Include(x => x.IdManufactureNavigation)
+        .Include(x => x.Stocks)
+        .ToList();
 }
