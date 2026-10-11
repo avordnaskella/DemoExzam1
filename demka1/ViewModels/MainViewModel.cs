@@ -4,8 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using demka1.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace demka1.ViewModels;
 
@@ -13,22 +15,20 @@ public partial class MainViewModel : ViewModelBase
 {
     static PostgresContext db = new PostgresContext();
 
-    [ObservableProperty]
-    UserControl page;
+    [ObservableProperty] UserControl page;
 
-    [ObservableProperty]
-    string pageTitle;
+    [ObservableProperty] string pageTitle;
 
     // введённый логин
-    [ObservableProperty]
-    string login = string.Empty;
+    [ObservableProperty] string login = string.Empty; //делаем не null чтобы не было проблем с привязкой
 
-    // найденный пользователь (для отображения ФИО)
-    [ObservableProperty]
-    User? currentUser;
+    // найденный пользователь 
+    [ObservableProperty] User? currentUser;
 
-    [ObservableProperty]
-    List<Product> products;
+    [ObservableProperty] List<Product> products;
+
+    // ссылка на главное окно (для показа диалогов)
+    public Window? HostWindow { get; set; }
 
     public MainViewModel()
     {
@@ -50,29 +50,58 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Login2()  // имя команды Login не может совпасть со свойством
+    private async Task Login2()
     {
-        if (string.IsNullOrWhiteSpace(Login))
-            return;
+        try
+        {
+            // Проверка 1: пустой логин
+            if (string.IsNullOrWhiteSpace(Login))
+            {
+                await MessageBox.Warning("Пустой логин",
+                    "Поле логина не может быть пустым. Введите ваш логин и повторите попытку.");
+                return;
+            }
 
-        // ищем пользователя по логину
-        CurrentUser = db.Users
-            .Include(x => x.IdRoleNavigation)
-            .FirstOrDefault(x => x.Login == Login);
+            // Проверка 2: логин слишком короткий
+            if (Login.Length < 3)
+            {
+                await MessageBox.Warning("Некорректный логин",
+                    "Логин должен содержать минимум 3 символа. Проверьте ввод.");
+                return;
+            }
 
-        // если пользователь не найден — ничего не делаем
-        if (CurrentUser == null)
-            return;
+            // Ищем пользователя
+            CurrentUser = db.Users
+                .Include(x => x.IdRoleNavigation)
+                .FirstOrDefault(x => x.Login == Login);
 
-        // загружаем товары
-        Products = db.Products
-            .Include(x => x.IdCategoryNavigation)
-            .Include(x => x.IdManufactureNavigation)
-            .Include(x => x.Stocks)
-            .ToList();
+            // Проверка 3: пользователь не найден
+            if (CurrentUser == null)
+            {
+                await MessageBox.Error("Пользователь не найден",
+                    $"Пользователь с логином «{Login}» в системе не найден.\n" +
+                    "Проверьте правильность ввода логина или обратитесь к администратору.");
+                return;
+            }
 
-        GoToProducts();
+            // Загружаем товары
+            Products = db.Products
+                .Include(x => x.IdCategoryNavigation)
+                .Include(x => x.IdManufactureNavigation)
+                .Include(x => x.Stocks)
+                .ToList();
+
+            GoToProducts();
+        }
+        catch (Exception ex)
+        {
+            await MessageBox.Error("Ошибка системы",
+                $"Произошла непредвиденная ошибка: {ex.Message}\n" +
+                "Попробуйте повторить действие позже или перезапустите приложение.");
+        }
     }
+
+
 
     [RelayCommand]
     private void Logout()

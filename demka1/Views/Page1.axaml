@@ -12,28 +12,27 @@
              x:Class="demka1.Page1">
 
   <Grid RowDefinitions="Auto, Auto, *"> 
-         <!-- Верхняя панель: заголовок + ФИО пользователя -->
-        <Border Grid.Row="0" Background="#DDD" Padding="10">
+         <!-- заголовок и фио -->
+        <Border Grid.Row="0" Background="LightBlue" Padding="10">
             <Grid ColumnDefinitions="Auto, *, Auto">
 
                 <TextBlock Grid.Column="0"
                            Text="{Binding PageTitle}"
                            FontSize="18"
-                           FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15">
                     <TextBlock Text="{Binding CurrentUser.FullName}"
                                FontSize="16"
                                VerticalAlignment="Center"/>
-                    <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
+                    <Button Content="Выйти" Background="LightSkyBlue" Command="{Binding LogoutCommand}"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Панель с кнопкой "Назад" -->
+        <!-- панель с кнопкой назад -->
         <Border Grid.Row="1" Padding="10">
-            <Button Content="← Назад" Command="{Binding BackCommand}"/>
+            <Button Content="Назад" Background="LightSkyBlue" Command="{Binding BackCommand}"/>
         </Border>
 
   <ScrollViewer Grid.Row="2"
@@ -45,7 +44,7 @@
       <ItemsControl.ItemTemplate>
           <DataTemplate>
            
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="10" Padding="10"
+                    <Border BorderBrush="LightBlue" BorderThickness="1" Margin="10" Padding="10"
                              Background="{Binding CardBackground}">
                         <Grid ColumnDefinitions="150, *, Auto">
 

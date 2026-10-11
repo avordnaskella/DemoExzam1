@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="demka1.MessageBox"
+        Title="MessageBox">
+   <Grid RowDefinitions="*, Auto" Margin="15">
+
+        <!-- Иконка + текст -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+            
+            <!-- Иконка (эмодзи вместо картинки — просто и работает) -->
+            <TextBlock Name="IconText"
+                       Text="ℹ"
+                       FontSize="48"
+                       VerticalAlignment="Center"/>
+
+            <!-- Текст сообщения -->
+            <TextBlock Name="MessageText"
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       MaxWidth="320"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Кнопка ОК -->
+        <Button Grid.Row="1"
+                Name="OkButton"
+                Content="ОК"
+                Width="100"
+                HorizontalAlignment="Right"
+                Click="OkButton_Click"/>
+    </Grid>
+
+</Window>

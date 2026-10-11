@@ -31,12 +31,12 @@ namespace demka1.Models
                 int targetMonth = lastMonthDate.Month;
                 int targetYear = lastMonthDate.Year;
 
-                // создаем контекст, чтобы проверить заказы (так как в MainViewModel мы их не загружали)
+                // создаем контекст, чтобы проверить заказы 
                 using (var db = new PostgresContext())
                 {
                     // ищем заказы на этот товар в прошлом месяце
                     bool hasOrdersInLastMonth = db.ProductsOrders
-                        .Include(x => x.IdOrderNavigation) // Нужно подтянуть дату заказа
+                        .Include(x => x.IdOrderNavigation) // 
                         .Any(x => x.IdProduct == this.IdProduct &&
                                   x.IdOrderNavigation.Date.Month == targetMonth &&
                                   x.IdOrderNavigation.Date.Year == targetYear);
@@ -54,22 +54,14 @@ namespace demka1.Models
         {
             get
             {
-                // если имя файла пустое или файл не найден вернем заглушку
-                if (string.IsNullOrEmpty(Image))
-                    return LoadImage("picture.png");
-
-                try
+                
+                if (!string.IsNullOrEmpty(Image))
                 {
-                    var uri = new Uri($"avares://demka1/Assets/{Image}");
-                    if (AssetLoader.Exists(uri))
-                        return new Bitmap(AssetLoader.Open(uri));
-                }
-                catch
-                {
-                    // если что-то пошло не так - тоже заглушка
+                    var img = LoadImage(Image);
+                    if (img != null) return img;
                 }
 
-                // если картинки нет - возвращаем заглушку
+                // во всех остальных случаях
                 return LoadImage("picture.png");
             }
         }
@@ -88,7 +80,8 @@ namespace demka1.Models
         }
 
         // готовый цвет фона карточки
-        public IBrush CardBackground => TotalCount <= 3 ? new SolidColorBrush(Color.Parse("#FFCCCC")): new SolidColorBrush(Colors.White);
+        public IBrush CardBackground => TotalCount <= 3 ? new SolidColorBrush(Color.Parse("#FFCCCC")): 
+        new SolidColorBrush(Colors.White);
 
     }
 }
