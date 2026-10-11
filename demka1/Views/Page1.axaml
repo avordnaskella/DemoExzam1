@@ -11,7 +11,32 @@
 
              x:Class="demka1.Page1">
 
-  <ScrollViewer
+  <Grid RowDefinitions="Auto, Auto, *"> 
+         <!-- Верхняя панель: заголовок + ФИО пользователя -->
+        <Border Grid.Row="0" Background="#DDD" Padding="10">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+
+                <TextBlock Grid.Column="0"
+                           Text="{Binding PageTitle}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15">
+                    <TextBlock Text="{Binding CurrentUser.FullName}"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                    <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Панель с кнопкой "Назад" -->
+        <Border Grid.Row="1" Padding="10">
+            <Button Content="← Назад" Command="{Binding BackCommand}"/>
+        </Border>
+
+  <ScrollViewer Grid.Row="2"
        VerticalScrollBarVisibility="Visible"
         HorizontalScrollBarVisibility="Disabled">
 
@@ -31,7 +56,7 @@
                                    Stretch="Uniform"
                                    Margin="0,0,10,0"/>
 
-                            <!-- 2. Текстовая информация -->
+                            <!-- текстовая информация -->
                             <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
                                 <TextBlock FontSize="16" FontWeight="Bold" HorizontalAlignment="Center">
                                     <Run Text="{Binding IdManufactureNavigation.Title}"/>
@@ -55,7 +80,7 @@
                                 </TextBlock>
                             </StackPanel>
 
-                            <!-- 3. Цена -->
+                            <!-- цена -->
                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" MinWidth="100">
                                 <StackPanel IsVisible="{Binding HasDiscount}">
                                     <TextBlock Text="{Binding FinalPrice, StringFormat='{}{0} руб.'}"
@@ -78,5 +103,6 @@
  </ItemsControl>
   
   </ScrollViewer> 
-
+ 
+    </Grid>
 </UserControl>

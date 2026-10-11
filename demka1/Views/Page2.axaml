@@ -6,5 +6,33 @@
              xmlns:vm="using:demka1.ViewModels"
              x:DataType="vm:MainViewModel"
              x:Class="demka1.Page2">
-  <TextBlock Text="Страница2"></TextBlock>
+  <Grid RowDefinitions="Auto, *">
+
+     <!-- заголовок страницы -->
+        <Border Grid.Row="0" Background="#DDD" Padding="10">
+            <TextBlock Text="{Binding PageTitle}" FontSize="18" FontWeight="Bold"/>
+        </Border>
+
+        <!-- форма входа -->
+        <StackPanel Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Spacing="15"
+                    Width="300">
+
+            <TextBlock Text="Вход в систему" FontSize="24" FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Введите логин:"/>
+
+            <TextBox Text="{Binding Login}" 
+                     Watermark="Логин"
+                     HorizontalAlignment="Stretch"/>
+
+            <Button Content="Войти"
+                    Command="{Binding Login2Command}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

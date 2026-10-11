@@ -26,21 +26,7 @@
       
    </Grid> -->
    
- <Grid RowDefinitions="50, *">
-     <Border Background="Aqua">
-         <TextBlock Grid.Row="0" Text="Чудо-обувь" FontSize="40" HorizontalAlignment="Center"></TextBlock>
-     </Border>
-     <Grid ColumnDefinitions="160, *" Grid.Row="1">
-         <Border Grid.Column="0" Background="CadetBlue">
-             <StackPanel>
-                 <Button Margin="10" Content="Главная страница" Command="{Binding Loading}" Background="DeepSkyBlue" HorizontalAlignment="Center"></Button>
-                 <Button Margin="10" Content="Заказы" Command="{Binding GetOrder}" Background="DeepSkyBlue" HorizontalAlignment="Center" ></Button>
-             </StackPanel>
-         </Border>
-        <UserControl Grid.Column="1" Content="{Binding Page}" Background="LightBlue"></UserControl> 
-        
-     </Grid>
- </Grid>
+  <ContentControl Content="{Binding Page}"/>
  
 
 </Window>
