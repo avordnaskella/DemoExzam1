@@ -11,97 +11,115 @@
 
              x:Class="demka1.Page1">
 
-  <Grid RowDefinitions="Auto, Auto, *"> 
-         <!-- заголовок и фио -->
-        <Border Grid.Row="0" Background="LightBlue" Padding="10">
+   <Grid RowDefinitions="Auto, Auto, Auto, *">
+
+        <!--  заголовок ФИО выход -->
+        <Border Grid.Row="0" Background="#DDD" Padding="10">
             <Grid ColumnDefinitions="Auto, *, Auto">
-
-                <TextBlock Grid.Column="0"
-                           Text="{Binding PageTitle}"
-                           FontSize="18"
-                           VerticalAlignment="Center"/>
-
+                <TextBlock Grid.Column="0" Text="{Binding PageTitle}"
+                           FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15">
-                    <TextBlock Text="{Binding CurrentUser.FullName}"
-                               FontSize="16"
-                               VerticalAlignment="Center"/>
-                    <Button Content="Выйти" Background="LightSkyBlue" Command="{Binding LogoutCommand}"/>
+                    <TextBlock Text="{Binding CurrentUser.FullName}" FontSize="16" VerticalAlignment="Center"/>
+                    <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- панель с кнопкой назад -->
+        <!-- кнопка назад -->
         <Border Grid.Row="1" Padding="10">
-            <Button Content="Назад" Background="LightSkyBlue" Command="{Binding BackCommand}"/>
+            <Button Content="← Назад" Command="{Binding BackCommand}"/>
         </Border>
 
-  <ScrollViewer Grid.Row="2"
-       VerticalScrollBarVisibility="Visible"
-        HorizontalScrollBarVisibility="Disabled">
+        <!-- панель поиска фильтра и сортировки -->
+        <Border Grid.Row="2" Padding="10">
+            <Grid ColumnDefinitions="*, 250, 250">
 
- 
-  <ItemsControl ItemsSource="{Binding Products}">
-      <ItemsControl.ItemTemplate>
-          <DataTemplate>
-           
-                    <Border BorderBrush="LightBlue" BorderThickness="1" Margin="10" Padding="10"
-                             Background="{Binding CardBackground}">
-                        <Grid ColumnDefinitions="150, *, Auto">
+                <!-- поиск -->
+                <TextBox Grid.Column="0"
+                         Text="{Binding SearchText}"
+                         Watermark="Поиск по названию или описанию..."
+                         Margin="0,0,10,0"/>
 
-                            
-                            <Image Grid.Column="0"
-                                   Source="{Binding ProductImage}"
-                                   Width="120" Height="80"
-                                   Stretch="Uniform"
-                                   Margin="0,0,10,0"/>
+                <!-- фильтр по категории -->
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory}"
+                          HorizontalAlignment="Stretch"
+                          Margin="0,0,10,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-                            <!-- текстовая информация -->
-                            <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
-                                <TextBlock FontSize="16" FontWeight="Bold" HorizontalAlignment="Center">
-                                    <Run Text="{Binding IdManufactureNavigation.Title}"/>
-                                    <Run Text=" | "/>
-                                    <Run Text="{Binding Title}"/>
-                                </TextBlock>
+                <!-- сортировка -->
+                <ComboBox Grid.Column="2"
+                          ItemsSource="{Binding SortOptions}"
+                          SelectedItem="{Binding SelectedSort}"
+                          HorizontalAlignment="Stretch"/>
+            </Grid>
+        </Border>
 
-                                <TextBlock>
-                                    <Run Text="Категория: "/>
-                                    <Run Text="{Binding IdCategoryNavigation.Title}"/>
-                                </TextBlock>
+        <!-- список товаров -->
+        <ScrollViewer Grid.Row="3"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Products}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" BorderThickness="1" Margin="10" Padding="10"
+                                Background="{Binding CardBackground}">
+                            <Grid ColumnDefinitions="150, *, Auto">
 
-                                <TextBlock>
-                                    <Run Text="Количество: "/>
-                                    <Run Text="{Binding CountString}"/>
-                                </TextBlock>
+                                <!-- картинка -->
+                                <Image Grid.Column="0"
+                                       Source="{Binding ProductImage}"
+                                       Width="120" Height="80"
+                                       Stretch="Uniform"
+                                       Margin="0,0,10,0"/>
 
-                                <TextBlock>
-                                    <Run Text="Состав: "/>
-                                    <Run Text="{Binding Structure}"/>
-                                </TextBlock>
-                            </StackPanel>
-
-                            <!-- цена -->
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" MinWidth="100">
-                                <StackPanel IsVisible="{Binding HasDiscount}">
-                                    <TextBlock Text="{Binding FinalPrice, StringFormat='{}{0} руб.'}"
-                                               FontSize="20" Foreground="Red" HorizontalAlignment="Right"/>
-                                    <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
-                                               FontSize="14" TextDecorations="Strikethrough"
-                                               Foreground="Gray" HorizontalAlignment="Right"/>
+                                <!-- текстовая информация -->
+                                <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                    <TextBlock FontSize="16" FontWeight="Bold" HorizontalAlignment="Center">
+                                        <Run Text="{Binding IdManufactureNavigation.Title}"/>
+                                        <Run Text=" | "/>
+                                        <Run Text="{Binding Title}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Категория: "/>
+                                        <Run Text="{Binding IdCategoryNavigation.Title}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Количество: "/>
+                                        <Run Text="{Binding CountString}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Состав: "/>
+                                        <Run Text="{Binding Structure}"/>
+                                    </TextBlock>
                                 </StackPanel>
 
-                                <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
-                                           FontSize="20"
-                                           IsVisible="{Binding !HasDiscount}"
-                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
-          </DataTemplate>
-      </ItemsControl.ItemTemplate>
- </ItemsControl>
-  
-  </ScrollViewer> 
- 
+                                <!-- цена -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center"
+                                            HorizontalAlignment="Right" MinWidth="100">
+                                    <StackPanel IsVisible="{Binding HasDiscount}">
+                                        <TextBlock Text="{Binding FinalPrice, StringFormat='{}{0} руб.'}"
+                                                   FontSize="20" Foreground="Red" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
+                                                   FontSize="14" TextDecorations="Strikethrough"
+                                                   Foreground="Gray" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Price, StringFormat='{}{0} руб.'}"
+                                               FontSize="20"
+                                               IsVisible="{Binding !HasDiscount}"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

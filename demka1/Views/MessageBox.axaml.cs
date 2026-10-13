@@ -22,15 +22,15 @@ public partial class MessageBox : Window
         switch (type)
         {
             case "error":
-                IconText.Text = "❌";
+                IconText.Text = "😒";
                 IconText.Foreground = Brushes.Red;
                 break;
             case "warning":
-                IconText.Text = "⚠";
+                IconText.Text = "😊😊😊";
                 IconText.Foreground = Brushes.Orange;
                 break;
             default:
-                IconText.Text = "ℹ";
+                IconText.Text = "💕";
                 IconText.Foreground = Brushes.SteelBlue;
                 break;
         }
@@ -38,7 +38,7 @@ public partial class MessageBox : Window
 
     private void OkButton_Click(object? sender, RoutedEventArgs e) => Close();
 
-    // Три коротких статических метода вместо одного универсального
+    
     public static Task Error(string title, string message)
         => new MessageBox(title, message, "error").ShowDialog(GetOwner());
 

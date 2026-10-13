@@ -7,29 +7,19 @@
         Title="MessageBox">
    <Grid RowDefinitions="*, Auto" Margin="15">
 
-        <!-- Иконка + текст -->
+        <!-- иконка с текстом -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
             
-            <!-- Иконка (эмодзи вместо картинки — просто и работает) -->
-            <TextBlock Name="IconText"
-                       Text="ℹ"
-                       FontSize="48"
-                       VerticalAlignment="Center"/>
+           
+            <TextBlock Name="IconText" Text="ℹ" FontSize="48" VerticalAlignment="Center"/>
 
-            <!-- Текст сообщения -->
-            <TextBlock Name="MessageText"
-                       TextWrapping="Wrap"
-                       FontSize="14"
-                       MaxWidth="320"
+            
+            <TextBlock Name="MessageText" TextWrapping="Wrap" FontSize="14" MaxWidth="320" 
                        VerticalAlignment="Center"/>
         </StackPanel>
 
-        <!-- Кнопка ОК -->
-        <Button Grid.Row="1"
-                Name="OkButton"
-                Content="ОК"
-                Width="100"
-                HorizontalAlignment="Right"
+    
+        <Button Grid.Row="1" Name="OkButton" Content="ОК" Width="100" HorizontalAlignment="Right" 
                 Click="OkButton_Click"/>
     </Grid>
 
