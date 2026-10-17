@@ -125,9 +125,13 @@ public partial class PostgresContext : DbContext
 
         modelBuilder.Entity<ProductsOrder>(entity =>
         {
+            // убираем HasNoKey() и ставим HasKey
+            // указываем составной ключ, который совпадает с вашим уникальным индексом
             entity
-                .HasNoKey()
-                .ToTable("products_orders", "shoes");
+                .HasKey(e => new { e.IdProduct, e.IdOrder, e.IdSize })
+                .HasName("products_orders_pkey");
+
+            entity.ToTable("products_orders", "shoes");
 
             entity.HasIndex(e => new { e.IdProduct, e.IdOrder, e.IdSize }, "products_orders_unique").IsUnique();
 

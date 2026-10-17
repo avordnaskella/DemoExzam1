@@ -6,8 +6,10 @@ using demka1.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace demka1.ViewModels;
 
@@ -47,7 +49,25 @@ public partial class MainViewModel : ViewModelBase
         "Цена: по убыванию"
     };
 
-    public MainViewModel()
+
+    // товар, выбранный для просмотра
+    [ObservableProperty] Product? selectedProduct;
+
+    // доступные размеры для выбранного товара, где count будет больше 0
+    [ObservableProperty] List<Size> availableSizes;
+
+    // выбранный размер
+    [ObservableProperty] Size? selectedSize;
+
+    // количество для добавления
+    [ObservableProperty] string orderCount = "1";
+
+    // список позиций текущего заказа 
+      
+
+    public ObservableCollection<CartItem> Cart { get; } = new();
+
+public MainViewModel()
     {
         // загружаем категории один раз
         var cats = db.Categories.ToList();
@@ -190,4 +210,195 @@ public partial class MainViewModel : ViewModelBase
     partial void OnSearchTextChanged(string value) => ApplyFilters();
     partial void OnSelectedCategoryChanged(Category? value) => ApplyFilters();
     partial void OnSelectedSortChanged(string value) => ApplyFilters();
+
+
+    [RelayCommand]
+    private void OpenProduct(Product product)
+    {
+        if (product == null) return;
+
+        SelectedProduct = product;
+
+        // загружаем доступные размеры: сначала Include, потом Where, потом Select
+        AvailableSizes = db.Stocks
+            .Include(s => s.IdSizeNavigation)             // Include до Where
+            .Where(s => s.IdProduct == product.IdProduct && s.Count > 0)
+            .Select(s => s.IdSizeNavigation)
+            .ToList()                                   
+            .GroupBy(s => s.IdSize)                       
+            .Select(g => g.First())
+            .ToList();
+
+        // сколько размеров нашлось
+        System.Diagnostics.Debug.WriteLine(
+            $"[OpenProduct] Товар {product.IdProduct}, размеров: {AvailableSizes.Count}");
+
+        // сброс
+        SelectedSize = null;
+        OrderCount = "1";
+
+        Page = new Page3();
+        PageTitle = "Просмотр товара";
+    }
+
+
+    [RelayCommand]
+    private async Task AddToCart()
+    {
+        // проверки
+        if (SelectedProduct == null) return;
+
+        if (SelectedSize == null)
+        {
+            await MessageBox.Warning("Размер не выбран",
+                "Выберите размер товара из списка перед добавлением в заказ.");
+            return;
+        }
+
+        if (!int.TryParse(OrderCount, out int count) || count <= 0)
+        {
+            await MessageBox.Warning("Некорректное количество",
+                "Введите целое положительное число в поле «Количество».");
+            return;
+        }
+
+        // сколько доступно на складе для этого товара+размера
+        int available = db.Stocks
+            .Where(s => s.IdProduct == SelectedProduct.IdProduct && s.IdSize == SelectedSize.IdSize)
+            .Sum(s => s.Count);
+
+        if (count > available)
+        {
+            await MessageBox.Warning("Недостаточно товара",
+                $"На складе доступно только {available} шт. Уменьшите количество.");
+            return;
+        }
+
+        // проверяем, нет ли уже такого товара с таким размером в корзине
+        var existing = Cart.FirstOrDefault(c =>
+            c.Product.IdProduct == SelectedProduct.IdProduct &&
+            c.Size.IdSize == SelectedSize.IdSize);
+
+        if (existing != null)
+        {
+            // суммируем
+            if (existing.Count + count > available)
+            {
+                await MessageBox.Warning("Недостаточно товара",
+                    $"С учётом уже добавленного в заказ доступно только {available} шт.");
+                return;
+            }
+
+            // убираем старый элемент и добавляем новый с увеличенным количеством
+            
+            Cart.Remove(existing);
+            Cart.Add(new CartItem
+            {
+                Product = SelectedProduct,
+                Size = SelectedSize,
+                Count = existing.Count + count
+            });
+        }
+        else
+        {
+            // просто добавляем новый
+            Cart.Add(new CartItem
+            {
+                Product = SelectedProduct,
+                Size = SelectedSize,
+                Count = count
+            });
+        }
+
+        await MessageBox.Info("Добавлено", "Товар добавлен в заказ.");
+    }
+
+    [RelayCommand]
+    private async Task ConfirmOrder()
+    {
+        if (CurrentUser == null)
+        {
+            await MessageBox.Warning("Не выполнен вход",
+                "Для оформления заказа необходимо авторизоваться.");
+            return;
+        }
+
+        if (Cart.Count == 0)
+        {
+            await MessageBox.Warning("Пустой заказ",
+                "Добавьте хотя бы одну позицию перед оформлением.");
+            return;
+        }
+
+        try
+        {
+            // создаём заказ
+            var order = new Order
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                IdUser = CurrentUser.Login
+            };
+            db.Orders.Add(order);
+            db.SaveChanges(); // теперь у order есть IdOrder
+
+            // добавляем позиции
+            foreach (var item in Cart)
+            {
+                db.ProductsOrders.Add(new ProductsOrder
+                {
+                    IdOrder = order.IdOrder,
+                    IdProduct = item.Product.IdProduct,
+                    IdSize = item.Size.IdSize,
+                    Count = item.Count
+                });
+
+                // уменьшаем остатки на складе
+                var stock = db.Stocks
+                    .FirstOrDefault(s => s.IdProduct == item.Product.IdProduct
+                                      && s.IdSize == item.Size.IdSize);
+                if (stock != null)
+                {
+                    stock.Count -= item.Count;
+                    if (stock.Count < 0) stock.Count = 0; // защита
+                }
+            }
+
+            db.SaveChanges();
+
+            // очищаем корзину
+            Cart.Clear();
+
+            await MessageBox.Info("Заказ оформлен",
+                $"Заказ №{order.IdOrder} успешно сохранён.");
+
+            // обновляем список товаров — перечитываем из БД
+            AllProducts = db.Products
+                .Include(x => x.IdCategoryNavigation)
+                .Include(x => x.IdManufactureNavigation)
+                .Include(x => x.Stocks)
+                .ToList();
+            ApplyFilters();
+
+            // возвращаемся к списку товаров
+            GoToProducts();
+        }
+        catch (Exception ex)
+        {
+            await MessageBox.Error("Ошибка оформления",
+                $"Не удалось сохранить заказ: {ex.Message}");
+        }
+    }
+    [RelayCommand]
+    private void CancelOrder()
+    {
+        Cart.Clear();
+        GoToProducts();
+    }
+
+    [RelayCommand]
+    private void BackToProducts()
+    {
+        GoToProducts();
+    }
+
 }

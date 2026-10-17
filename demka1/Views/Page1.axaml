@@ -27,7 +27,7 @@
 
         <!-- кнопка назад -->
         <Border Grid.Row="1" Padding="10">
-            <Button Content="← Назад" Command="{Binding BackCommand}"/>
+            <Button Content="Назад" Command="{Binding BackCommand}"/>
         </Border>
 
         <!-- панель поиска фильтра и сортировки -->
@@ -35,10 +35,8 @@
             <Grid ColumnDefinitions="*, 250, 250">
 
                 <!-- поиск -->
-                <TextBox Grid.Column="0"
-                         Text="{Binding SearchText}"
-                         Watermark="Поиск по названию или описанию..."
-                         Margin="0,0,10,0"/>
+                <TextBox Grid.Column="0" Text="{Binding SearchText}"
+                Watermark="Поиск по названию или описанию" Margin="0,0,10,0"/>
 
                 <!-- фильтр по категории -->
                 <ComboBox Grid.Column="1"
@@ -68,6 +66,15 @@
             <ItemsControl ItemsSource="{Binding Products}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
+                        
+                        <Button Command="{Binding $parent[ItemsControl].DataContext.OpenProductCommand}"
+                    CommandParameter="{Binding}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="0"
+                    HorizontalContentAlignment="Stretch"
+                    HorizontalAlignment="Stretch">
+
                         <Border BorderBrush="Black" BorderThickness="1" Margin="10" Padding="10"
                                 Background="{Binding CardBackground}">
                             <Grid ColumnDefinitions="150, *, Auto">
@@ -117,6 +124,7 @@
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
